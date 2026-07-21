@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+html_content = """<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>花蓮遠雄悅來【慢活美食✕亦忻喝奶算盤】親子自駕 3D2N</title>
+    <title>花蓮遠雄悅來【慢活美食✕喝奶算盤✕氣候預報】親子自駕 3D2N</title>
     <style>
         /* 防手賤選取 / App 級鎖定 */
         * {
@@ -36,14 +36,14 @@
         }
 
         .app-header h1 {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 700;
             letter-spacing: 0.5px;
             margin-bottom: 3px;
         }
 
         .app-header p {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             opacity: 0.95;
         }
 
@@ -68,8 +68,8 @@
 
         .nav-tabs label {
             flex: 0 0 auto;
-            padding: 12px 14px;
-            font-size: 0.85rem;
+            padding: 12px 13px;
+            font-size: 0.83rem;
             font-weight: 600;
             color: #64748b;
             cursor: pointer;
@@ -77,9 +77,14 @@
             transition: all 0.2s ease;
         }
 
-        .nav-tabs label.highlight {
-            color: #0284c7;
-            background-color: #f0f9ff;
+        .nav-tabs label.highlight-pink {
+            color: #e11d48;
+            background-color: #fff1f2;
+        }
+
+        .nav-tabs label.highlight-amber {
+            color: #d97706;
+            background-color: #fef3c7;
         }
 
         /* CSS 選擇器驅動 Tab 切換 */
@@ -88,6 +93,7 @@
         #tab-day2:checked ~ .nav-tabs label[for="tab-day2"],
         #tab-day3:checked ~ .nav-tabs label[for="tab-day3"],
         #tab-baby:checked ~ .nav-tabs label[for="tab-baby"],
+        #tab-weather:checked ~ .nav-tabs label[for="tab-weather"],
         #tab-map:checked ~ .nav-tabs label[for="tab-map"],
         #tab-tips:checked ~ .nav-tabs label[for="tab-tips"] {
             color: #0284c7;
@@ -117,6 +123,7 @@
         #tab-day2:checked ~ .tab-content-container #panel-day2,
         #tab-day3:checked ~ .tab-content-container #panel-day3,
         #tab-baby:checked ~ .tab-content-container #panel-baby,
+        #tab-weather:checked ~ .tab-content-container #panel-weather,
         #tab-map:checked ~ .tab-content-container #panel-map,
         #tab-tips:checked ~ .tab-content-container #panel-tips {
             display: block;
@@ -135,6 +142,11 @@
         .card.baby-card {
             border-left-color: #f43f5e;
             background: #fff5f5;
+        }
+
+        .card.weather-card {
+            border-left-color: #f59e0b;
+            background: #fffbe3;
         }
 
         .card.accent {
@@ -156,6 +168,10 @@
 
         .card.baby-card h2 {
             color: #e11d48;
+        }
+
+        .card.weather-card h2 {
+            color: #b45309;
         }
 
         .card h3 {
@@ -191,6 +207,10 @@
 
         .baby-card ul.bullet-list li::before {
             color: #e11d48;
+        }
+
+        .weather-card ul.bullet-list li::before {
+            color: #d97706;
         }
 
         /* 時間軸 */
@@ -358,12 +378,41 @@
         .baby-schedule-table tr:nth-child(even) {
             background-color: #fff1f2;
         }
+
+        /* 天氣氣候專用表格 */
+        .weather-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .weather-table th {
+            background: #fef3c7;
+            color: #78350f;
+            padding: 8px 6px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .weather-table td {
+            padding: 8px 6px;
+            border-bottom: 1px solid #fef3c7;
+            color: #451a03;
+        }
+
+        .weather-table tr:nth-child(even) {
+            background-color: #fffbeb;
+        }
     </style>
 </head>
 <body>
 
     <header class="app-header">
-        <h1>🌊 花蓮遠雄悅來【慢活美食✕亦忻喝奶算盤】</h1>
+        <h1>🌊 花蓮遠雄悅來【慢活美食✕喝奶算盤✕氣候預報】</h1>
         <p>三峽出發 • 宜蘭童玩放電 • 花蓮精選美食 (2026/7/30 - 8/1)</p>
     </header>
 
@@ -372,6 +421,7 @@
     <input type="radio" id="tab-day2" name="nav-tab">
     <input type="radio" id="tab-day3" name="nav-tab">
     <input type="radio" id="tab-baby" name="nav-tab">
+    <input type="radio" id="tab-weather" name="nav-tab">
     <input type="radio" id="tab-map" name="nav-tab">
     <input type="radio" id="tab-tips" name="nav-tab">
 
@@ -380,7 +430,8 @@
         <label for="tab-day1">D1 (7/30 四)</label>
         <label for="tab-day2">D2 (7/31 五)</label>
         <label for="tab-day3">D3 (8/1 六)</label>
-        <label for="tab-baby" class="highlight">🍼 亦忻喝奶算盤</label>
+        <label for="tab-baby" class="highlight-pink">🍼 亦忻喝奶算盤</label>
+        <label for="tab-weather" class="highlight-amber">🌤️ 氣候預報</label>
         <label for="tab-map">🗺️ 導航地圖</label>
         <label for="tab-tips">🎒 親子備忘</label>
     </nav>
@@ -678,6 +729,78 @@
             </div>
         </section>
 
+        <section id="panel-weather" class="tab-panel">
+            <div class="card weather-card">
+                <h2>🌤️ 7/30 ~ 8/1 行程地點氣候預報</h2>
+                <p>為您監測全行程涵蓋地點的天氣概況與體感指數：</p>
+
+                <table class="weather-table">
+                    <thead>
+                        <tr>
+                            <th>日期 / 地點</th>
+                            <th>天氣狀況</th>
+                            <th>氣溫區間</th>
+                            <th>降雨機率</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>7/30 (四) 三峽</strong></td>
+                            <td>多雲到晴 ☀️</td>
+                            <td>26°C - 34°C</td>
+                            <td>10%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>7/30 (四) 宜蘭冬山</strong></td>
+                            <td>多雲短暫雷陣雨 🌦️</td>
+                            <td>25°C - 32°C</td>
+                            <td>25% - 30%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>7/30 (四) 花蓮鹽寮</strong></td>
+                            <td>多雲時晴 ⛅</td>
+                            <td>26°C - 32°C</td>
+                            <td>20%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>7/31 (五) 海洋公園</strong></td>
+                            <td>多雲到晴/午後陣雨 🌤️</td>
+                            <td>26°C - 33°C</td>
+                            <td>25%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>7/31 (五) 花蓮市區</strong></td>
+                            <td>多雲舒適 ⛅</td>
+                            <td>27°C - 29°C</td>
+                            <td>15%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>8/1 (六) 花蓮市區</strong></td>
+                            <td>多雲時晴 ⛅</td>
+                            <td>26°C - 32°C</td>
+                            <td>20%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>8/1 (六) 蘇澳服務區</strong></td>
+                            <td>多雲微風 ⛅</td>
+                            <td>26°C - 30°C</td>
+                            <td>15%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 14px;">
+                    <h3>🎒 親子防護與穿搭建議</h3>
+                    <ul class="bullet-list">
+                        <li><strong>酷暑防曬必備</strong>：盛夏東海岸紫外線強烈（過量級），備妥遮陽帽、太陽眼鏡、防曬乳與攜帶式 USB 小風扇。</li>
+                        <li><strong>穿著技巧（冷熱穿梭）</strong>：雙寶採用「短袖包屁衣/T恤 ＋ 輕薄防曬透氣外套」。從戶外進入水族館或冷氣房時及時加衣防受涼。</li>
+                        <li><strong>防蚊防護</strong>：第一天傍晚青蛙導覽與第二天家咖哩庭園，請備好嬰幼兒防蚊液或防蚊貼片。</li>
+                        <li><strong>備用雨具</strong>：車上準備折傘/輕便雨衣，因夏季山區午後偶有短暫陣雨。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
         <section id="panel-map" class="tab-panel">
             <div class="card">
                 <h2>🗺️ 一鍵導航 Google Maps</h2>
@@ -712,3 +835,9 @@
 
 </body>
 </html>
+"""
+
+with open("hualien_trip_app.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print("Updated HTML generated successfully with weather tab!")
