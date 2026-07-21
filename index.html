@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>花蓮遠雄悅來親子自駕 3天2夜 | 專屬行程 App</title>
+    <style>
+        /* 防手賤選取 / App 級鎖定 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #2c3e50;
+            line-height: 1.6;
+            padding-bottom: 30px;
+        }
+
+        /* 頂部 Header */
+        .app-header {
+            background: linear-gradient(135deg, #0077b6, #00b4d8);
+            color: white;
+            padding: 20px 15px 15px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .app-header h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .app-header p {
+            font-size: 0.82rem;
+            opacity: 0.9;
+        }
+
+        /* 純 CSS Radio 隱藏按鈕 */
+        input[type="radio"] {
+            display: none;
+        }
+
+        /* 滑動分頁導航列 */
+        .nav-tabs {
+            display: flex;
+            background: #ffffff;
+            overflow-x: auto;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 65px;
+            z-index: 99;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav-tabs label {
+            flex: 0 0 auto;
+            padding: 12px 16px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #6c757d;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        /* CSS 選擇器驅動 Tab 切換 */
+        #tab-overview:checked ~ .nav-tabs label[for="tab-overview"],
+        #tab-day1:checked ~ .nav-tabs label[for="tab-day1"],
+        #tab-day2:checked ~ .nav-tabs label[for="tab-day2"],
+        #tab-day3:checked ~ .nav-tabs label[for="tab-day3"],
+        #tab-map:checked ~ .nav-tabs label[for="tab-map"],
+        #tab-tips:checked ~ .nav-tabs label[for="tab-tips"] {
+            color: #0077b6;
+            border-bottom-color: #0077b6;
+            background-color: #f0f9ff;
+        }
+
+        /* 內容容器 */
+        .tab-content-container {
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #tab-overview:checked ~ .tab-content-container #panel-overview,
+        #tab-day1:checked ~ .tab-content-container #panel-day1,
+        #tab-day2:checked ~ .tab-content-container #panel-day2,
+        #tab-day3:checked ~ .tab-content-container #panel-day3,
+        #tab-map:checked ~ .tab-content-container #panel-map,
+        #tab-tips:checked ~ .tab-content-container #panel-tips {
+            display: block;
+        }
+
+        /* 卡片風格 */
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-left: 4px solid #0077b6;
+        }
+
+        .card.accent {
+            border-left-color: #ffb703;
+        }
+
+        .card.green {
+            border-left-color: #2a9d8f;
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            color: #0077b6;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card h3 {
+            font-size: 0.98rem;
+            color: #1d3557;
+            margin: 10px 0 6px;
+        }
+
+        .card p, .card li {
+            font-size: 0.88rem;
+            color: #4a5568;
+            margin-bottom: 6px;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul.bullet-list li {
+            position: relative;
+            padding-left: 18px;
+            margin-bottom: 6px;
+        }
+
+        ul.bullet-list li::before {
+            content: "•";
+            position: absolute;
+            left: 4px;
+            color: #0077b6;
+            font-weight: bold;
+        }
+
+        /* 時間軸 */
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 4px;
+            bottom: 4px;
+            width: 2px;
+            background: #e2e8f0;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -18px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #0077b6;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 0 2px #0077b6;
+        }
+
+        .time-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-bottom: 4px;
+        }
+
+        /* 導航按鈕 */
+        .btn-map {
+            display: inline-flex;
+            align-items: center;
+            background: #0077b6;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 16px;
+            margin-top: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-map:active {
+            background: #023e8a;
+        }
+
+        /* 提示框 */
+        .alert-box {
+            background: #fff8e6;
+            border: 1px solid #ffe399;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.82rem;
+            color: #b7791f;
+            margin-top: 8px;
+        }
+
+        /* 表格樣式 */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            margin-top: 8px;
+        }
+
+        .summary-table th {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 8px;
+            text-align: left;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        .summary-table td {
+            padding: 8px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        .svg-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <h1>🌊 花蓮遠雄悅來親子自駕 3D2N</h1>
+        <p>三峽出發 • 四口慢活 • 控時純享版 (2026/7/30 - 8/1)</p>
+    </header>
+
+    <input type="radio" id="tab-overview" name="nav-tab" checked>
+    <input type="radio" id="tab-day1" name="nav-tab">
+    <input type="radio" id="tab-day2" name="nav-tab">
+    <input type="radio" id="tab-day3" name="nav-tab">
+    <input type="radio" id="tab-map" name="nav-tab">
+    <input type="radio" id="tab-tips" name="nav-tab">
+
+    <nav class="nav-tabs">
+        <label for="tab-overview">📋 行程總覽</label>
+        <label for="tab-day1">D1 (7/30 四)</label>
+        <label for="tab-day2">D2 (7/31 五)</label>
+        <label for="tab-day3">D3 (8/1 六)</label>
+        <label for="tab-map">🗺️ 導航地圖</label>
+        <label for="tab-tips">👶 親子備忘</label>
+    </nav>
+
+    <main class="tab-content-container">
+
+        <section id="panel-overview" class="tab-panel">
+            <div class="card">
+                <h2>👨‍👩‍👧‍👦 家族成員與旅程資訊</h2>
+                <ul class="bullet-list">
+                    <li><strong>旅程成員</strong>：政憲爸爸、美佑媽媽、亦璇大寶 (3歲)、亦忻小寶 (10個月)</li>
+                    <li><strong>出發基地</strong>：新北市三峽區（國道 3 號直接國道 5 號）</li>
+                    <li><strong>住宿飯店</strong>：花蓮遠雄悅來大飯店（連住兩晚）</li>
+                    <li><strong>交通方式</strong>：全程自家車舒服自駕</li>
+                </ul>
+            </div>
+
+            <div class="card green">
+                <h2>📅 3 天 2 夜簡明日程表</h2>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>主要行程與亮點</th>
+                            <th>餐點建議</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>D1<br>7/30(四)</strong></td>
+                            <td>三峽出發 ➡️ 冬山星夢森林劇場 ➡️ 蘇花改(雙寶午睡) ➡️ 悅來 Check-in ➡️ 青蛙夜間導覽</td>
+                            <td>午：蘇澳海鮮/輕食<br>晚：飯店 Buffet 晚餐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D2<br>7/31(五)</strong></td>
+                            <td>遠雄海洋公園（海豚海獅秀/探險島水族館冷氣/推車午睡）➡️ 飯店水上設施 ➡️ 鹽寮海鮮美饌</td>
+                            <td>早：飯店早餐<br>午：園區簡餐<br>晚：187 或 055海鮮</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D3<br>8/1(六)</strong></td>
+                            <td>飯店泳池玩水 ➡️ 月崖灣親子農場 ➡️ 景觀午餐 ➡️ 15:30 愜意返航 ➡️ 蘇澳服務區 ➡️ 順抵三峽</td>
+                            <td>早：飯店早餐<br>午：市區/海景餐廳<br>晚：家常溫馨晚餐</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="panel-day1" class="tab-panel">
+            <div class="card">
+                <h2>🚩 Day 1：宜蘭萌寵 ➡️ 蘇花慢駛 ➡️ 飯店夜尋青蛙</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="time-badge">08:30</span>
+                        <h3>三峽家中出發</h3>
+                        <p>經國道 3 號北上於南港系統直接銜接國道 5 號，避開台北市區塞車，車程順暢約 65 分鐘。</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">09:40 - 11:30</span>
+                        <h3>星夢森林劇場（宜蘭冬山）</h3>
+                        <p>園區平坦好推車，可親近水豚君、羊駝、侏儒羊，3 歲亦璇會非常開心！</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=星夢森林劇場" class="btn-map" target="_blank">📍 導航到星夢森林劇場</a>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">11:45 - 13:30</span>
+                        <h3>午餐：蘇澳在地海鮮 / 輕食</h3>
+                        <p>於蘇澳享用午餐，補充體力，順便為雙寶換尿布與準備車上奶水。</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">14:00 - 16:30</span>
+                        <h3>車上午睡 ＆ 蘇花改愜意自駕</h3>
+                        <p>上車餵奶後雙寶進入深層睡眠，政憲爸爸順著蘇花改開往花蓮，沿途欣賞蔚藍太平洋。</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">16:30</span>
+                        <h3>抵達遠雄悅來大飯店 Check-in</h3>
+                        <p>辦理入住並於房內休息片刻，欣賞太平洋海景。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=花蓮遠雄悅來大飯店" class="btn-map" target="_blank">📍 導航到遠雄悅來大飯店</a>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">17:15 - 18:25</span>
+                        <h3>晚餐：飯店英倫西餐廳 Buffet</h3>
+                        <p>直接於飯店內優雅用餐，免去長途開車下山的奔波疲勞。</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">18:30 - 19:30</span>
+                        <h3>飯店夜間生態/青蛙導覽</h3>
+                        <p>專人帶領夜間探索自然生態，讓大寶觀察夜間小生物。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="panel-day2" class="tab-panel">
+            <div class="card">
+                <h2>🐬 Day 2：遠雄海洋公園 ➡️ 海鮮美饌 ➡️ 飯店設施</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="time-badge">08:30 - 09:30</span>
+                        <h3>飯店享用豐盛早餐</h3>
+                        <p>悠閒享用早餐，補滿活力能量。</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">09:45 - 16:30</span>
+                        <h3>遠雄海洋公園放電</h3>
+                        <p>開車下山僅需 5 分鐘。探險島水族館全館冷氣舒適，適合 10 個月小寶看魚；亦璇大寶可玩旋轉木馬等設施。13:00-15:00 雙寶可在推車上舒服午睡。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=遠雄海洋公園" class="btn-map" target="_blank">📍 導航到遠雄海洋公園</a>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">16:30 - 17:30</span>
+                        <h3>返回飯店 & 泳池玩水</h3>
+                        <p>回房稍作整理，或前往戶外/室內泳池短暫享受親水時光。</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">17:45 - 19:30</span>
+                        <h3>晚餐：187 海鮮 或 055 龍蝦海鮮</h3>
+                        <p>位於鹽寮海岸線，提供室內冷氣包廂與平整桌椅，對帶幼童的家庭極度友善。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=187海鮮" class="btn-map" target="_blank">📍 導航到 187海鮮</a>
+                        <a href="https://www.google.com/maps/search/?api=1&query=055海鮮" class="btn-map" target="_blank">📍 導航到 055海鮮</a>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">20:00~</span>
+                        <h3>回飯店享受夜景與休閒設施</h3>
+                        <p>回房享受星空夜景，早點休息充電。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="panel-day3" class="tab-panel">
+            <div class="card">
+                <h2>⛰️ Day 3：飯店泳池 ➡️ 月崖灣農場 ➡️ 順暢返抵三峽</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="time-badge">08:30 - 09:30</span>
+                        <h3>飯店早餐 ＆ 退房準備</h3>
+                        <p>享用早餐，辦理退房，行李可先寄放於車上。</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">09:30 - 11:00</span>
+                        <h3>飯店室內外泳池玩水</h3>
+                        <p>悅來泳池設施對幼童極度友善，享受最後的花蓮晨光玩水。</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">11:30 - 13:00</span>
+                        <h3>月崖灣親子農場</h3>
+                        <p>位於鹽寮海景第一排，可餵食水豚、羊駝，拍照打卡海景鞦韆。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=月崖灣親子農場" class="btn-map" target="_blank">📍 導航到月崖灣親子農場</a>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">13:30 - 15:00</span>
+                        <h3>午餐：花蓮市區 / 海景景觀餐廳</h3>
+                        <p>享用在地名產午餐，準備為雙寶上車前換尿布與補水。</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">15:30</span>
+                        <h3>花蓮啟程返航（雙寶車上午睡）</h3>
+                        <p>避開市區下班車流，雙寶上車開啟長途午睡模式。</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">17:00 - 17:30</span>
+                        <h3>蘇澳服務區（休息 Buffer）</h3>
+                        <p>下車洗手、換尿布、購買宜蘭名產與咖啡。</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=蘇澳服務區" class="btn-map" target="_blank">📍 導航到蘇澳服務區</a>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">18:45 - 19:00</span>
+                        <h3>順暢返抵三峽溫馨家園</h3>
+                        <p>經國 5 接國 3 下三峽交流道，平安優雅抵達家中！</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="panel-map" class="tab-panel">
+            <div class="card">
+                <h2>🗺️ 景點與自駕路線一鍵導航</h2>
+                <p>點擊下方按鈕即可自動開啟 Google Maps 規劃最佳自駕路線：</p>
+                <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+                    <a href="https://www.google.com/maps/search/?api=1&query=星夢森林劇場" class="btn-map" target="_blank">📍 D1: 星夢森林劇場 (宜蘭冬山)</a>
+                    <a href="https://www.google.com/maps/search/?api=1&query=花蓮遠雄悅來大飯店" class="btn-map" target="_blank">📍 D1-D3 住宿: 花蓮遠雄悅來大飯店</a>
+                    <a href="https://www.google.com/maps/search/?api=1&query=遠雄海洋公園" class="btn-map" target="_blank">📍 D2: 遠雄海洋公園</a>
+                    <a href="https://www.google.com/maps/search/?api=1&query=187海鮮" class="btn-map" target="_blank">📍 D2 晚餐: 187海鮮 (鹽寮)</a>
+                    <a href="https://www.google.com/maps/search/?api=1&query=月崖灣親子農場" class="btn-map" target="_blank">📍 D3: 月崖灣親子農場</a>
+                    <a href="https://www.google.com/maps/search/?api=1&query=蘇澳服務區" class="btn-map" target="_blank">📍 D3 回程休息站: 蘇澳服務區</a>
+                </div>
+            </div>
+
+            <div class="card green">
+                <h2>🚗 三峽往返花蓮自駕動線提示</h2>
+                <ul class="bullet-list">
+                    <li><strong>去程</strong>：三峽家中 ➡️ 國道3號北上 ➡️ 南港系統交流道 ➡️ 國道5號 ➡️ 蘇澳交流道 ➡️ 蘇花改 ➡️ 花蓮鹽寮（約 3.5 ~ 4 小時）。</li>
+                    <li><strong>回程</strong>：花蓮鹽寮 ➡️ 蘇花改 ➡️ 蘇澳服務區（休息）➡️ 國道5號 ➡️ 南港系統 ➡️ 國道3號 ➡️ 三峽交流道。</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="panel-tips" class="tab-panel">
+            <div class="card accent">
+                <h2>👶 雙寶自駕必備防護清單</h2>
+                <ul class="bullet-list">
+                    <li><strong>推車與防曬</strong>：雙人推車 / 單人推車 + 遮陽帽、防曬乳、攜帶式小風扇。</li>
+                    <li><strong>水族館與農場備品</strong>：亦璇大寶防蚊液、水壺、防滑水鞋；亦忻小寶尿布包、奶粉/奶瓶、副食品加熱保溫瓶。</li>
+                    <li><strong>泳池裝備</strong>：嬰幼兒防水尿布、戲水造型泳衣、大浴巾。</li>
+                    <li><strong>車上安撫神隊友</strong>：米餅零食、雙寶喜愛的音樂/故事機、小毛毯（冷氣防涼）。</li>
+                </ul>
+            </div>
+
+            <div class="alert-box">
+                💡 <strong>時間管控達人提醒</strong>：盛夏 7/30~8/1 花蓮陽光充沛，正午戶外體感溫度高，建議儘量將戶外農場安排於上午 11:30 前，中午用餐與午後 14:00~15:30 務必安排室內冷氣或車上午睡充電！
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>
